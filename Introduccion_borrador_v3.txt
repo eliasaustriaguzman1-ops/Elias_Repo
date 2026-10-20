@@ -1,0 +1,59 @@
+INTRODUCCIÓN
+
+El estudio de los registros epidemiológicos permite describir la evolución de las notificaciones de enfermedades y explorar relaciones entre sus comportamientos temporales y territoriales. En México, el Boletín Epidemiológico de la Dirección General de Epidemiología difunde semanalmente información sobre casos nuevos de los padecimientos sujetos a vigilancia, con desagregaciones que incluyen sexo y entidad federativa [1]. Estos registros ofrecen una base para desarrollar investigaciones que integren análisis estadístico y aprendizaje automático.
+
+La presente tesina analizará la relación entre los casos semanales notificados de otras enfermedades y los de infecciones de vías urinarias por entidad federativa en México, utilizando la base proporcionada para el seminario, cuyos registros están etiquetados como 2023 y 2024 [2]. Además de identificar asociaciones, se evaluará si incorporar información histórica de otros padecimientos mejora la predicción de los casos de infecciones urinarias con una semana de anticipación. El estudio comprenderá la revisión de la calidad de los datos, el análisis exploratorio, la selección de variables y la comparación temporal de modelos.
+
+PLANTEAMIENTO DEL PROBLEMA
+
+La información de vigilancia puede utilizarse para examinar si las notificaciones de distintos padecimientos presentan comportamientos relacionados. Sin embargo, observar que dos series aumentan o disminuyen simultáneamente no establece que una enfermedad produzca la otra ni demuestra que esa asociación sea útil para predecir casos futuros. El problema que orienta esta investigación consiste en determinar cuáles de las enfermedades disponibles aportan información adicional al historial de las propias infecciones de vías urinarias.
+
+La revisión preliminar de la base identificó 4,992 registros y 25 padecimientos. De ellos, 1,664 registros constituyen una copia exacta del bloque etiquetado como 2024, por lo que existen 3,328 filas distintas. También se observaron inconsistencias en algunos nombres de entidades [2]. Estas características requieren preparar un conjunto de análisis trazable, evitando que los registros repetidos alteren las asociaciones o aparezcan simultáneamente en entrenamiento y evaluación.
+
+De acuerdo con la aclaración proporcionada por el responsable del proyecto, SEM representa los casos nuevos de la semana para ambos sexos, mientras que M y F corresponden a los acumulados masculinos y femeninos. En la semana 1, estos acumulados presentan el total del año anterior. Por ello, no se interpretará su cambio hacia la semana 2 como una disminución real de casos. Esta definición se incorporará al diccionario de datos y se contrastará con los encabezados y periodos de los boletines originales.
+
+Asimismo, se han señalado discrepancias entre los conteos semanales y la evolución de los acumulados, atribuidas por el responsable del proyecto a errores humanos. La investigación documentará esta explicación como información aportada sobre la base y verificará, cuando sea posible, las cifras contra sus fuentes. No se asumirá que toda discrepancia tiene la misma causa ni que el acumulado o el conteo semanal es necesariamente el valor correcto.
+
+El tratamiento considerará la conciliación de cifras únicamente mediante reglas explícitas y justificadas. Se conservará una versión original y se distinguirán las correcciones respaldadas por la fuente de los ajustes o estimaciones construidos para el análisis. Cuando no exista evidencia suficiente para establecer un valor, la inconsistencia se mantendrá identificada o se evaluará en un escenario alternativo. La coincidencia aritmética entre sumas no se considerará, por sí sola, evidencia de exactitud.
+
+Para documentar los efectos del tratamiento se registrarán los valores originales, los valores ajustados, la magnitud y el motivo de cada modificación. Se calculará la varianza de las series antes y después del ajuste sobre las mismas observaciones comparables, así como la dispersión de las diferencias introducidas. Estas medidas se acompañarán del número y proporción de registros modificados y de la magnitud absoluta de los cambios, ya que la varianza por sí sola no describe completamente la intervención.
+
+La variable principal será el conteo SEM de infecciones de vías urinarias. Se explorarán las series SEM de los otros 24 padecimientos, tanto en la misma semana como con desfases temporales. El análisis considerará diferencias entre entidades y patrones temporales compartidos, para reducir la posibilidad de interpretar como relación específica una coincidencia asociada al volumen de notificación, a tendencias o a comportamientos estacionales.
+
+Las relaciones contemporáneas tendrán un propósito descriptivo. En los modelos de predicción solo se utilizarán datos que hubieran estado disponibles antes de la semana objetivo. La selección de enfermedades y el ajuste de los modelos se efectuarán dentro de los periodos de entrenamiento y validación, sin utilizar el periodo final de prueba para elegir variables o procedimientos.
+
+A partir de este planteamiento, se formula la siguiente pregunta de investigación: ¿Qué relación existe entre los casos semanales notificados de otras enfermedades y los de infecciones de vías urinarias por entidad federativa en México durante 2023–2024, y en qué medida incorporar su información histórica mejora la predicción de casos de infecciones de vías urinarias con una semana de anticipación mediante aprendizaje automático?
+
+JUSTIFICACIÓN
+
+La investigación permitirá valorar si el análisis conjunto de enfermedades aporta información que no se obtiene al estudiar exclusivamente el historial de infecciones de vías urinarias. Su contribución consistirá en identificar asociaciones reproducibles y comprobar su utilidad predictiva mediante una comparación cuantitativa. Incluso si las variables adicionales no reducen los errores, el resultado permitirá delimitar su utilidad con la base disponible.
+
+El proyecto también abordará la calidad de los datos como parte del problema de investigación. La Organización Mundial de la Salud incluye la completitud, la consistencia interna y la comparación con fuentes externas entre las dimensiones de evaluación de datos sanitarios [3]. Esta orientación respalda la revisión de la base; las reglas concretas de conciliación y las medidas de cambio propuestas serán decisiones metodológicas propias del proyecto, que deberán justificarse y documentarse.
+
+Para evaluar la utilidad de las otras enfermedades se compararán, bajo las mismas condiciones temporales, modelos con el historial de infecciones urinarias y atributos territoriales y temporales, frente a modelos que incorporen adicionalmente los historiales de los padecimientos seleccionados. Se utilizarán KNN para regresión y una red neuronal de tipo perceptrón multicapa, implementada en Keras y adaptada a la predicción de conteos, junto con una referencia basada en el último conteo observado. Para ambos modelos se ajustará el escalamiento de las variables únicamente con los datos de entrenamiento. La red comenzará con una arquitectura pequeña, cuya complejidad y regularización se elegirán mediante validación temporal para controlar el sobreajuste. Se compararán también los resultados obtenidos con los conteos originales, una vez retirados los duplicados y normalizadas las etiquetas, y con las versiones numéricamente ajustadas que se justifiquen.
+
+Los resultados podrían aportar información complementaria para el seguimiento del volumen de casos notificados. Su interpretación se limitará a asociaciones entre registros agregados y a desempeño predictivo retrospectivo. La base no permite establecer si una misma persona presentó varias enfermedades ni estimar directamente una relación clínica individual. Tampoco se atribuirá causalidad a las asociaciones o a la importancia de las variables en los modelos.
+
+La cobertura de aproximadamente dos años y la posible existencia de revisiones de las notificaciones limitarán la generalización de los hallazgos. Por ello, se evaluará la estabilidad de las asociaciones entre entidades y periodos, y se explicará hasta qué punto las conclusiones dependen del tratamiento aplicado a los datos.
+
+OBJETIVOS
+
+Objetivo general
+
+Analizar la asociación entre los casos semanales notificados de otras enfermedades y los de infecciones de vías urinarias por entidad federativa en México durante 2023–2024, mediante un tratamiento trazable de los datos y la comparación temporal de modelos de aprendizaje automático, para determinar si incorporar información histórica de otros padecimientos mejora la predicción con una semana de anticipación.
+
+Objetivos específicos
+
+1. Diagnosticar la calidad y consistencia de los registros mediante la identificación de duplicados, errores de etiquetas y discrepancias entre casos semanales y acumulados, considerando la correspondencia de los periodos de reporte y el reinicio anual.
+
+2. Establecer y evaluar un procedimiento reproducible de depuración y, cuando exista justificación, conciliación de cifras, conservando los valores originales y cuantificando los cambios por medio de diferencias, proporción de registros modificados y varianzas antes y después del tratamiento.
+
+3. Caracterizar el comportamiento temporal y territorial de las infecciones de vías urinarias y de los otros padecimientos disponibles mediante estadísticas descriptivas y visualizaciones.
+
+4. Evaluar asociaciones contemporáneas y con desfases temporales entre las enfermedades y las infecciones de vías urinarias, considerando tendencias compartidas, diferencias entre entidades y el efecto de realizar múltiples comparaciones.
+
+5. Desarrollar modelos KNN para regresión y una red neuronal de tipo perceptrón multicapa implementada en Keras, con y sin información histórica de otras enfermedades, mediante selección de variables, escalamiento y ajuste de parámetros dentro de particiones cronológicas de entrenamiento y validación.
+
+6. Comparar el error absoluto medio y la raíz del error cuadrático medio de los modelos y de la referencia básica en un periodo de prueba reservado, e interpretar la estabilidad de los resultados por entidad, periodo y escenario de tratamiento de datos.
+
+
